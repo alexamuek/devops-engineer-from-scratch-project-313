@@ -11,3 +11,7 @@ def index():
 @app.route('/ping')
 def ping():
     return "pong"
+
+@app.errorhandler(404)
+def not_found(error):
+    return "Page not found", 404

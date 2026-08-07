@@ -1,0 +1,48 @@
+name: Python tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - uses: actions/setup-python@v7
+      with:
+        python-version: '3.13' 
+
+    - name: Restore cache 
+      id: cache-restore
+      uses: actions/cache/restore@v6
+      with:
+        path: |
+          ~/.cache/uv
+          ~/.cache/pip
+        key: ${{ runner.os }}-app 
+
+    - name: Install dependencies
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      run: make install
+    
+    - name: Run app
+      run: make run
+    
+    - name: Run pytest tests
+      run: make test
+    
+    - name: lint
+      run: make lint
+    
+    - name: Save cache
+      id: cache-save
+      uses: actions/cache/save@v6
+      with:
+        path: |
+          ~/.cache/uv
+          ~/.cache/pip
+        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
