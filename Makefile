@@ -10,4 +10,4 @@ test:
 build:
 	docker build -t my-flask-app:latest .
 run:
-	docker run -p 8080:8080 --name my-flask-app --env-file .env my-flask-app:latest
+	docker run -d -p 8080:8080 --name my-flask-app --env-file .env my-flask-app:latest

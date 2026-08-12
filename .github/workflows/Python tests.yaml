@@ -30,7 +30,16 @@ jobs:
       run: make install
     
     - name: Run app
-      run: make start
+      run: make start &
+
+    - name: Wait for app
+      run: |
+        for i in {1..30}; do
+          curl -fsS http://127.0.0.1:8080/ping && exit 0
+          sleep 1
+        done
+        exit 1
+
     
     - name: Run pytest tests
       run: make test
