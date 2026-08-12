@@ -1,6 +1,8 @@
-from flask import Flask
-from instruments import sentry_init
 import logging
+
+from flask import Flask
+
+from instruments import sentry_init
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,10 +24,12 @@ def index():
 def ping():
     return "pong"
 
+
 @app.route("/error")
 def hello_world():
-    1/0  # raises an error
+    1 / 0  # raises an error
     return "<p>Hello, World!</p>"
+
 
 @app.errorhandler(404)
 def not_found(error):
