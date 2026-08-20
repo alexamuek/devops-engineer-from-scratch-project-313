@@ -3,3 +3,6 @@
 To run web application run ```make run```  
 The application will be available by url: localhost:8080.  
 Use this url in your browser to interact to app
+
+Before run build.sh to create table in database:  
+RUN ```chmod +x ./build.sh```
