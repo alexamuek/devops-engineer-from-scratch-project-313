@@ -6,9 +6,10 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 load_dotenv()  # Загрузка переменных окружения из файла .env
 
-engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
 
-SQLModel.metadata.create_all(engine)
+def get_engine():
+    database_url = os.getenv("DATABASE_URL")
+    return create_engine(database_url, echo=True)
 
 
 class Links(SQLModel, table=True):
@@ -20,7 +21,7 @@ class Links(SQLModel, table=True):
 
     @classmethod
     def get_links(cls):
-        with Session(engine) as session:
+        with Session(get_engine()) as session:
             statement = select(cls)
             results = session.exec(statement)
             links = results.all()
@@ -28,7 +29,7 @@ class Links(SQLModel, table=True):
 
     @classmethod
     def find_link_by_id(cls, id):
-        with Session(engine) as session:
+        with Session(get_engine()) as session:
             statement = select(cls).where(cls.id == id)
             result = session.exec(statement)
             link = result.first()
@@ -38,7 +39,7 @@ class Links(SQLModel, table=True):
 
     @classmethod
     def find_link_by_short_name(cls, short_name):
-        with Session(engine) as session:
+        with Session(get_engine()) as session:
             statement = select(cls).where(cls.short_name == short_name)
             result = session.exec(statement)
             link = result.first()
@@ -49,7 +50,7 @@ class Links(SQLModel, table=True):
     @classmethod
     def add_link(cls, original_url, short_name, short_url):
         try:
-            with Session(engine) as session:
+            with Session(get_engine()) as session:
                 link = cls(original_url=original_url, 
                     short_name=short_name, 
                     short_url=short_url)
@@ -63,7 +64,7 @@ class Links(SQLModel, table=True):
 
     @classmethod
     def delete_link(cls, id):
-        with Session(engine) as session:
+        with Session(get_engine()) as session:
             statement = select(cls).where(cls.id == id)
             link = session.exec(statement).one_or_none()
             if link is None:
@@ -74,7 +75,7 @@ class Links(SQLModel, table=True):
 
     @classmethod
     def update_link(cls, id, original_url, short_name, short_url):
-        with Session(engine) as session:
+        with Session(get_engine()) as session:
             statement = select(cls).where(cls.id == id)
             link = session.exec(statement).one_or_none()
             if link is None:
