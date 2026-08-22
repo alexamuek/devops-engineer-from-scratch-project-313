@@ -28,7 +28,6 @@ jobs:
         key: ${{ runner.os }}-app 
 
     - name: Install dependencies
-      if: steps.cache-restore.outputs.cache-hit != 'true'
       run: make install
     
     - name: Run pytest tests
