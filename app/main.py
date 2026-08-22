@@ -17,7 +17,8 @@ app.logger.setLevel("INFO")
 
 repo = Links
 
-bad_answer = {"error": "Short name already exists"}
+bad_answer_422 = {"detail": "Short name already exists"}
+bad_answer_404 = {"detail": "Resource is not found"}
 
 
 @app.get("/api/links")
@@ -37,7 +38,7 @@ def links_post():
     if result:
         return result, 201
     else:
-        return bad_answer, 422
+        return bad_answer_422, 422
 
 
 @app.get("/api/links/<int:id>")
@@ -68,7 +69,7 @@ def links_patch(id):
     if new_link is None:
         abort(404)
     if new_link is False:
-        return bad_answer, 422
+        return bad_answer_422, 422
     return jsonify(new_link), 200
         
 
@@ -85,6 +86,6 @@ def links_redirect(short_name):
 
 @app.errorhandler(404)
 def not_found(error):
-    return "Not Found", 404
+    return bad_answer_404, 404
 
 # uv run flask --app app.main run --port 8080  - запуск development сервера

@@ -7,7 +7,8 @@ from app.main import Links, app
 
 load_dotenv()  # Загрузка переменных окружения из файла .env
 
-bad_answer = {"error": "Short name already exists"}
+bad_answer_422 = {"detail": "Short name already exists"}
+bad_answer_404 = {"detail": "Resource is not found"}
 test_data = {
         "id": 1,
         "original_url": "https://example.com/long-url1",
@@ -25,7 +26,7 @@ def client():
 def test_root_404_answer(monkeypatch, client):
     response = client.get('/')
     assert response.status_code == 404
-    assert response.text == "Not Found"
+    assert response.json == bad_answer_404
 
 
 def test_links_index(monkeypatch, client):
@@ -66,7 +67,7 @@ def test_links_show_404_answer(monkeypatch, client):
     monkeypatch.setattr(Links, "find_link_by_id", lambda id: None)
     response = client.get('/api/links/10')
     assert response.status_code == 404
-    assert response.text == "Not Found"
+    assert response.json == bad_answer_404
 
 
 def test_links_delete(monkeypatch, client):
@@ -80,7 +81,7 @@ def test_links_delete_404_answer(monkeypatch, client):
     monkeypatch.setattr(Links, "delete_link", lambda id: None)
     response = client.delete('/api/links/10')
     assert response.status_code == 404
-    assert response.text == "Not Found"
+    assert response.json == bad_answer_404
 
 
 def test_links_patch(monkeypatch, client):
@@ -100,7 +101,7 @@ def test_links_patch_404_answer(monkeypatch, client):
         json={"original_url": test_data["original_url"], 
             "short_name": test_data["short_name"]})
     assert response.status_code == 404
-    assert response.text == "Not Found"
+    assert response.json == bad_answer_404
 
 
 def test_links_patch_422_answer(monkeypatch, client):
@@ -116,7 +117,7 @@ def test_links_patch_422_answer(monkeypatch, client):
         json={"original_url": test_data["original_url"], 
         "short_name": test_data["short_name"]})
     assert response.status_code == 422
-    assert response.json == bad_answer
+    assert response.json == bad_answer_422
 
 
 def test_links_post(monkeypatch, client):
@@ -136,7 +137,7 @@ def test_links_post_422_answer(monkeypatch, client):
         json={"original_url": test_data["original_url"], 
             "short_name": test_data["short_name"]})
     assert response.status_code == 422
-    assert response.json == bad_answer
+    assert response.json == bad_answer_422
 
 
 def test_links_redirect_by_short_name_404_answer(monkeypatch, client):
@@ -144,7 +145,7 @@ def test_links_redirect_by_short_name_404_answer(monkeypatch, client):
         lambda short_name: None)
     response = client.get('/r/test')
     assert response.status_code == 404
-    assert response.text == "Not Found"
+    assert response.json == bad_answer_404
 
 
 def test_links_redirect_by_short_name(monkeypatch, client):
