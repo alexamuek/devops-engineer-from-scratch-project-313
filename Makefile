@@ -31,7 +31,6 @@ run-local-postgres: create-network
 		-e POSTGRES_DB=$(LOCAL_POSTGRES_DB) \
 		-p $(LOCAL_POSTGRES_PORT):5432 \
 		-d postgres
-	./build.sh
 dev:
 	set -a; . ./.env.local; set +a; \
 	uv run python -c 'from app.repository import init_db; init_db()'; \

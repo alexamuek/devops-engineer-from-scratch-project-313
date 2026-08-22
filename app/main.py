@@ -18,6 +18,7 @@ app.logger.setLevel("INFO")
 
 repo = Links
 
+
 @app.get("/api/links")
 def links_index():
     links = repo.get_links()

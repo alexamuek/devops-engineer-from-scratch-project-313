@@ -1,9 +1,9 @@
 import os
-
 from datetime import datetime
+
 from dotenv import load_dotenv  # Импортируем dotenv
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy import Column, DateTime, func
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 load_dotenv()  # Загрузка переменных окружения из файла .env
@@ -12,6 +12,7 @@ load_dotenv()  # Загрузка переменных окружения из �
 def get_engine():
     database_url = os.getenv("DATABASE_URL")
     return create_engine(database_url, echo=True)
+
 
 def init_db():
     SQLModel.metadata.create_all(get_engine())
@@ -30,7 +31,6 @@ class Links(SQLModel, table=True):
                 server_default=func.now(),
         ),
     )
-
 
     @classmethod
     def get_links(cls):
