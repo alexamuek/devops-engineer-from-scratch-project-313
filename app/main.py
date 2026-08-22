@@ -5,6 +5,7 @@ from flask import Flask, abort, jsonify, make_response, request
 
 from app.instruments import sentry_init
 from app.repository import Links
+from app.validator import validate
 
 sentry_init()
 
@@ -17,10 +18,6 @@ app.logger.setLevel("INFO")
 
 repo = Links
 
-bad_answer_422 = {"detail": "Short name already exists"}
-bad_answer_404 = {"detail": "Resource is not found"}
-
-
 @app.get("/api/links")
 def links_index():
     links = repo.get_links()
@@ -31,6 +28,8 @@ def links_index():
 def links_post():
     # извлекаем данные из формы
     link = request.json
+    if not validate(link):
+        return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
     short_url = f"{os.getenv("BASE_URL")}{link["short_name"]}"
     result = repo.add_link(link["original_url"], 
@@ -38,7 +37,7 @@ def links_post():
     if result:
         return result, 201
     else:
-        return bad_answer_422, 422
+        return {"detail": "Short name already exists"}, 422
 
 
 @app.get("/api/links/<int:id>")
@@ -62,6 +61,8 @@ def links_delete(id):
 @app.put("/api/links/<int:id>")
 def links_patch(id):
     link = request.json
+    if not validate(link):
+        return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
     short_url = f"{os.getenv("BASE_URL")}{link["short_name"]}"
     new_link = repo.update_link(id, link["original_url"], 
@@ -69,7 +70,7 @@ def links_patch(id):
     if new_link is None:
         abort(404)
     if new_link is False:
-        return bad_answer_422, 422
+        return {"detail": "Short name already exists"}, 422
     return jsonify(new_link), 200
         
 
@@ -86,6 +87,6 @@ def links_redirect(short_name):
 
 @app.errorhandler(404)
 def not_found(error):
-    return bad_answer_404, 404
+    return {"detail": "Resource is not found"}, 404
 
 # uv run flask --app app.main run --port 8080  - запуск development сервера

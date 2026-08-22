@@ -9,6 +9,8 @@ load_dotenv()  # Загрузка переменных окружения из �
 
 bad_answer_422 = {"detail": "Short name already exists"}
 bad_answer_404 = {"detail": "Resource is not found"}
+bad_answer_for_validation = {"detail": "Invalid JSON body"}
+
 test_data = {
         "id": 1,
         "original_url": "https://example.com/long-url1",
@@ -139,6 +141,18 @@ def test_links_post_422_answer(monkeypatch, client):
     assert response.status_code == 422
     assert response.json == bad_answer_422
 
+def test_links_post_422_validation_empty(monkeypatch, client):
+    response = client.post('/api/links', 
+        json={})
+    assert response.status_code == 422
+    assert response.json == bad_answer_for_validation
+
+def test_links_post_422_validation(monkeypatch, client):
+    response = client.post('/api/links', 
+        json={"url": test_data["original_url"], 
+            "name": test_data["short_name"]})
+    assert response.status_code == 422
+    assert response.json == bad_answer_for_validation
 
 def test_links_redirect_by_short_name_404_answer(monkeypatch, client):
     monkeypatch.setattr(Links, "find_link_by_short_name", 
@@ -146,7 +160,6 @@ def test_links_redirect_by_short_name_404_answer(monkeypatch, client):
     response = client.get('/r/test')
     assert response.status_code == 404
     assert response.json == bad_answer_404
-
 
 def test_links_redirect_by_short_name(monkeypatch, client):
     monkeypatch.setattr(Links, "find_link_by_short_name", 

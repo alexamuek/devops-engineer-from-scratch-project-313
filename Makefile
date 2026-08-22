@@ -9,6 +9,7 @@ install:
 	pip install uv
 	uv sync --frozen
 start:
+	uv run python -c 'from app.repository import init_db; init_db()'
 	uv run gunicorn -w 4 -b 0.0.0.0:8080 --timeout 120 app.main:app
 lint:
 	uv run ruff check .
@@ -32,4 +33,6 @@ run-local-postgres: create-network
 		-d postgres
 	./build.sh
 dev:
-	set -a; . ./.env.local; set +a; uv run flask --app app.main run --port 8080
+	set -a; . ./.env.local; set +a; \
+	uv run python -c 'from app.repository import init_db; init_db()'; \
+	uv run flask --app app.main run --port 8080

@@ -1,7 +1,9 @@
 import os
 
+from datetime import datetime
 from dotenv import load_dotenv  # Импортируем dotenv
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import Column, DateTime, func
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 load_dotenv()  # Загрузка переменных окружения из файла .env
@@ -11,13 +13,24 @@ def get_engine():
     database_url = os.getenv("DATABASE_URL")
     return create_engine(database_url, echo=True)
 
+def init_db():
+    SQLModel.metadata.create_all(get_engine())
+
 
 class Links(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     original_url: str
     short_name: str = Field(index=True, unique=True)
     short_url: str
-    # created_at: datetime | None = None
+    created_at: datetime | None = Field(
+        default=None,
+            sa_column=Column(
+                DateTime(timezone=True),
+                nullable=False,
+                server_default=func.now(),
+        ),
+    )
+
 
     @classmethod
     def get_links(cls):
@@ -25,7 +38,7 @@ class Links(SQLModel, table=True):
             statement = select(cls)
             results = session.exec(statement)
             links = results.all()
-            return [row.model_dump() for row in links]
+            return [row.model_dump(exclude={"created_at"}) for row in links]
 
     @classmethod
     def find_link_by_id(cls, id):
@@ -34,7 +47,7 @@ class Links(SQLModel, table=True):
             result = session.exec(statement)
             link = result.first()
             if link:
-                return link.model_dump()
+                return link.model_dump(exclude={"created_at"})
             return None
 
     @classmethod
@@ -44,7 +57,7 @@ class Links(SQLModel, table=True):
             result = session.exec(statement)
             link = result.first()
             if link:
-                return link.model_dump()
+                return link.model_dump(exclude={"created_at"})
             return None
 
     @classmethod
@@ -57,7 +70,7 @@ class Links(SQLModel, table=True):
                 session.add(link)
                 session.commit()
                 session.refresh(link)  # ← обновляем объект (получаем id)
-                return link.model_dump()
+                return link.model_dump(exclude={"created_at"})
         except IntegrityError:
             # short_name уже существует (UNIQUE constraint)
             return None
@@ -87,7 +100,7 @@ class Links(SQLModel, table=True):
                 session.add(link)
                 session.commit()
                 session.refresh(link)
-                return link.model_dump()
+                return link.model_dump(exclude={"created_at"})
             except IntegrityError:
                 # short_name уже существует (UNIQUE constraint)
                 return False
