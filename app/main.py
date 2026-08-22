@@ -87,4 +87,4 @@ def links_redirect(short_name):
 def not_found(error):
     return "Not Found", 404
 
-# uv run flask --app example4 run --port 8000  - запуск development сервера
+# uv run flask --app app.main run --port 8080  - запуск development сервера
