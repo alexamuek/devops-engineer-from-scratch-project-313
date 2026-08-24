@@ -35,3 +35,5 @@ dev:
 	set -a; . ./.env.local; set +a; \
 	uv run python -c 'from app.repository import init_db; init_db()'; \
 	uv run flask --app app.main run --port 8080
+dev-concarently:
+	npx concurrently 'make dev' 'npx start-hexlet-devops-deploy-crud-frontend'

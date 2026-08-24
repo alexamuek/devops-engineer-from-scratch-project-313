@@ -3,6 +3,7 @@ import re
 
 from dotenv import load_dotenv  # Импортируем dotenv
 from flask import Flask, abort, jsonify, make_response, request
+from flask_cors import CORS
 
 from app.instruments import sentry_init
 from app.repository import Links
@@ -19,6 +20,14 @@ app.logger.setLevel("INFO")
 
 repo = Links
 
+if os.getenv("APP_ENV") == "development":
+    CORS(
+        app,
+        origins=["http://localhost:5173"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type"],
+        expose_headers=["Content-Range", "Accept-Ranges"],
+      )
 
 def parse_and_check_range(range_query):
     range_query = range_query.replace(" ", "")

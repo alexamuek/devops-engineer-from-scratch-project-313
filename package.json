@@ -1,0 +1,28 @@
+{
+  "name": "devops-engineer-from-scratch-project-313",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/alexamuek/devops-engineer-from-scratch-project-313/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/alexamuek/devops-engineer-from-scratch-project-313/actions)   To run web application run ```make run```   The application will be available by url: localhost:8080.   Use this url in your browser to interact to app",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexamuek/devops-engineer-from-scratch-project-313.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/alexamuek/devops-engineer-from-scratch-project-313/issues"
+  },
+  "homepage": "https://github.com/alexamuek/devops-engineer-from-scratch-project-313#readme",
+  "dependencies": {
+    "@hexlet/project-devops-deploy-crud-frontend": "^1.0.4",
+    "concurrently": "^10.0.5"
+  }
+}
