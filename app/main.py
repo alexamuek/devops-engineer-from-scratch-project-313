@@ -21,6 +21,7 @@ repo = Links
 
 
 def parse_and_check_range(range_query):
+    range_query = range_query.replace(" ", "")
     pattern = r'^\[\d+,\d+\]$'
     if not re.match(pattern, range_query):
         return None, None
