@@ -1,4 +1,5 @@
 import os
+import re
 
 from dotenv import load_dotenv  # Импортируем dotenv
 from flask import Flask, abort, jsonify, make_response, request
@@ -19,10 +20,41 @@ app.logger.setLevel("INFO")
 repo = Links
 
 
+def parse_and_check_range(range_query):
+    pattern = r'^\[\d+,\d+\]$'
+    if not re.match(pattern, range_query):
+        return None, None
+    only_numbers = range_query[1:-1]
+    separator = ","
+    (start_str, end_str) = only_numbers.split(separator)
+    offset = int(start_str)
+    end = int(end_str)
+    if offset < 0 or end < 0:
+        return None, None
+    limit = end - offset
+    if limit < 0:
+        return None, None
+    return offset, limit
+
+
 @app.get("/api/links")
 def links_index():
-    links = repo.get_links()
-    return jsonify(links), 200
+    start_end_string = request.args.get("range", default="[0,10]")
+    (offset, limit) = parse_and_check_range(start_end_string)
+    if offset is None:
+        return {"detail": "Bad range"}, 400
+    links = repo.get_links(offset, limit)
+    total = repo.get_count()
+    start = offset
+    if limit == 0:
+        end = offset
+    else:
+        end = min(offset + limit - 1, total - 1)
+    response = make_response(jsonify(links))
+    response.status_code = 200
+    response.headers["Content-Range"] = f"links {start}-{end}/{total}"
+    response.headers["Accept-Ranges"] = "bytes"
+    return response
 
 
 @app.post("/api/links")

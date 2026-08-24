@@ -33,9 +33,16 @@ class Links(SQLModel, table=True):
     )
 
     @classmethod
-    def get_links(cls):
+    def get_count(cls):
         with Session(get_engine()) as session:
-            statement = select(cls)
+            statement = select(func.count(Links.id))
+            total = session.exec(statement).one()
+            return total
+
+    @classmethod
+    def get_links(cls, offset_, limit_):
+        with Session(get_engine()) as session:
+            statement = select(cls).offset(offset_).limit(limit_)
             results = session.exec(statement)
             links = results.all()
             return [row.model_dump(exclude={"created_at"}) for row in links]
