@@ -29,6 +29,7 @@ if os.getenv("APP_ENV") == "development":
         expose_headers=["Content-Range", "Accept-Ranges"],
       )
 
+
 def parse_and_check_range(range_query):
     range_query = range_query.replace(" ", "")
     pattern = r'^\[\d+,\d+\]$'
