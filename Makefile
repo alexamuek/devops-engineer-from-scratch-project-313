@@ -37,3 +37,5 @@ dev:
 	uv run flask --app app.main run --port 8080
 dev-concarently:
 	npx concurrently 'make dev' 'npx start-hexlet-devops-deploy-crud-frontend'
+start-with-nginx:
+	make start & nginx -g 'daemon off;'
