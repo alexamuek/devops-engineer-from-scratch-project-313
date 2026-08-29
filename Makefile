@@ -17,7 +17,9 @@ test:
 	uv run pytest
 build:
 	docker build -t my-flask-app:latest .
-run: create-network
+run:
+	make start
+docker-run: create-network
 	docker run -d -p 8080:8080 \
 		--name my-flask-app \
 		--network $(DOCKER_NETWORK) \
