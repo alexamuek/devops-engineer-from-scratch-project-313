@@ -7,9 +7,9 @@ from app.main import Links, app
 
 load_dotenv()  # Загрузка переменных окружения из файла .env
 
-bad_answer_422 = {"detail": "Short name already exists"}
+bad_answer_422 = {"detail": {"message": "Short name already exists"}}
 bad_answer_404 = {"detail": "Resource is not found"}
-bad_answer_for_validation = {"detail": "Invalid JSON body"}
+bad_answer_for_validation = {"detail": {"message":"Invalid JSON body"}}
 
 test_data = {
         "id": 1,
@@ -38,10 +38,9 @@ def client():
         yield client
 
 
-def test_root_404_answer(monkeypatch, client):
+def test_root_200_answer(monkeypatch, client):
     response = client.get('/')
-    assert response.status_code == 404
-    assert response.json == bad_answer_404
+    assert response.status_code == 200
 
 
 def test_links_index(monkeypatch, client, make_test_data):

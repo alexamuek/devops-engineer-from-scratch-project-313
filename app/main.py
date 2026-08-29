@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv  # Импортируем dotenv
 from flask import Flask, abort, jsonify, make_response, request, send_from_directory
@@ -34,7 +35,7 @@ def ping():
 
 @app.get("/")
 def index():
-    return send_from_directory(app.root_path / "public", "index.html")
+    return send_from_directory(Path(app.root_path) / "public", "index.html")
 
 @app.get("/api/links")
 def links_index():
@@ -61,7 +62,7 @@ def links_post():
     # извлекаем данные из формы
     link = request.get_json(silent=True)
     if not validate_body(link):
-        return {"detail": "Invalid JSON body"}, 422
+        return {"detail": {"message":"Invalid JSON body"}}, 422
     # сохраняем новую ссылку 
     short_url = f"{os.getenv("BASE_URL")}/r/{link["short_name"]}"
     result = repo.add_link(link["original_url"], 
@@ -69,7 +70,7 @@ def links_post():
     if result:
         return result, 201
     else:
-        return {"detail": "Short name already exists"}, 422
+        return {"detail": {"message": "Short name already exists"}}, 422
 
 
 @app.get("/api/links/<int:id>")
@@ -94,7 +95,7 @@ def links_delete(id):
 def links_patch(id):
     link = request.get_json(silent=True)
     if not validate_body(link):
-        return {"detail": "Invalid JSON body"}, 422
+        return {"detail": {"message":"Invalid JSON body"}}, 422
     # сохраняем новую ссылку 
     short_url = f"{os.getenv("BASE_URL")}/r/{link["short_name"]}"
     new_link = repo.update_link(id, link["original_url"], 
@@ -102,7 +103,7 @@ def links_patch(id):
     if new_link is None:
         abort(404)
     if new_link is False:
-        return {"detail": "Short name already exists"}, 422
+        return {"detail": {"message": "Short name already exists"}}, 422
     return jsonify(new_link), 200
         
 
