@@ -1,5 +1,4 @@
 import os
-import re
 
 from dotenv import load_dotenv  # Импортируем dotenv
 from flask import Flask, abort, jsonify, make_response, request
@@ -7,7 +6,7 @@ from flask_cors import CORS
 
 from app.instruments import sentry_init
 from app.repository import Links
-from app.validator import validate
+from app.validator import validate_body, parse_and_check_range
 
 sentry_init()
 
@@ -28,25 +27,6 @@ if os.getenv("APP_ENV") == "development":
         allow_headers=["Content-Type"],
         expose_headers=["Content-Range", "Accept-Ranges"],
       )
-
-
-def parse_and_check_range(range_query):
-    range_query = range_query.replace(" ", "")
-    pattern = r'^\[\d+,\d+\]$'
-    if not re.match(pattern, range_query):
-        return None, None
-    only_numbers = range_query[1:-1]
-    separator = ","
-    (start_str, end_str) = only_numbers.split(separator)
-    offset = int(start_str)
-    end = int(end_str)
-    if offset < 0 or end < 0:
-        return None, None
-    limit = end - offset
-    if limit < 0:
-        return None, None
-    return offset, limit
-
 
 @app.get("/api/links")
 def links_index():
@@ -72,7 +52,7 @@ def links_index():
 def links_post():
     # извлекаем данные из формы
     link = request.json
-    if not validate(link):
+    if not validate_body(link):
         return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
     short_url = f"{os.getenv("BASE_URL")}{link["short_name"]}"
@@ -105,7 +85,7 @@ def links_delete(id):
 @app.put("/api/links/<int:id>")
 def links_patch(id):
     link = request.json
-    if not validate(link):
+    if not validate_body(link):
         return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
     short_url = f"{os.getenv("BASE_URL")}{link["short_name"]}"
