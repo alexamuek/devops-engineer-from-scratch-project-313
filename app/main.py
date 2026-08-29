@@ -63,7 +63,7 @@ def links_post():
     if not validate_body(link):
         return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
-    short_url = f"{os.getenv("BASE_URL")}{link["short_name"]}"
+    short_url = f"{os.getenv("BASE_URL")}/r/{link["short_name"]}"
     result = repo.add_link(link["original_url"], 
         link["short_name"], short_url)
     if result:
@@ -96,7 +96,7 @@ def links_patch(id):
     if not validate_body(link):
         return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
-    short_url = f"{os.getenv("BASE_URL")}{link["short_name"]}"
+    short_url = f"{os.getenv("BASE_URL")}/r/{link["short_name"]}"
     new_link = repo.update_link(id, link["original_url"], 
         link["short_name"], short_url)
     if new_link is None:

@@ -20,7 +20,7 @@ build:
 run:
 	make start
 docker-run: create-network
-	docker run -d -p 8080:8080 \
+	docker run -d -p 8080:80 \
 		--name my-flask-app \
 		--network $(DOCKER_NETWORK) \
 		--env-file .env \
