@@ -59,7 +59,7 @@ def links_index():
 @app.post("/api/links")
 def links_post():
     # извлекаем данные из формы
-    link = request.json
+    link = request.get_json(silent=True)
     if not validate_body(link):
         return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
@@ -92,7 +92,7 @@ def links_delete(id):
 
 @app.put("/api/links/<int:id>")
 def links_patch(id):
-    link = request.json
+    link = request.get_json(silent=True)
     if not validate_body(link):
         return {"detail": "Invalid JSON body"}, 422
     # сохраняем новую ссылку 
