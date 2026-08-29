@@ -1,5 +1,6 @@
-from schema import Schema
 import re
+
+from schema import Schema
 
 
 def validate_body(body):
@@ -8,6 +9,7 @@ def validate_body(body):
 		"short_name": str
 	})
 	return schema.is_valid(body)
+
 
 def parse_and_check_range(range_query):
     range_query = range_query.replace(" ", "")

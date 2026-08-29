@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 from app.instruments import sentry_init
 from app.repository import Links
-from app.validator import validate_body, parse_and_check_range
+from app.validator import parse_and_check_range, validate_body
 
 sentry_init()
 
@@ -27,6 +27,7 @@ if os.getenv("APP_ENV") == "development":
         allow_headers=["Content-Type"],
         expose_headers=["Content-Range", "Accept-Ranges"],
       )
+
 
 @app.get("/api/links")
 def links_index():
