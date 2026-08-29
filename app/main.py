@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv  # Импортируем dotenv
-from flask import Flask, abort, jsonify, make_response, request
+from flask import Flask, abort, jsonify, make_response, request, send_from_directory
 from flask_cors import CORS
 
 from app.instruments import sentry_init
@@ -28,6 +28,13 @@ if os.getenv("APP_ENV") == "development":
         expose_headers=["Content-Range", "Accept-Ranges"],
       )
 
+@app.get("/ping")
+def ping():
+    return "pong", 200
+
+@app.get("/")
+def index():
+    return send_from_directory(app.root_path / "public", "index.html")
 
 @app.get("/api/links")
 def links_index():
