@@ -9,7 +9,7 @@ load_dotenv()  # Загрузка переменных окружения из �
 
 bad_answer_422 = {"detail": {"message": "Short name already exists"}}
 bad_answer_404 = {"detail": "Resource is not found"}
-bad_answer_for_validation = {"detail": {"message":"Invalid JSON body"}}
+bad_answer_for_validation = {"detail": {"message": "Invalid JSON body"}}
 
 test_data = {
         "id": 1,
