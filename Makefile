@@ -22,8 +22,6 @@ test:
 	uv run pytest
 build:
 	docker build -t my-flask-app:latest .
-run: #for hexlet tests
-	make start
 #Run app via Docker
 docker-run: create-network
 	docker run -d -p 8080:80 \
@@ -46,4 +44,6 @@ dev:
 	uv run flask --app app.main run --port 8080
 dev-concarently:
 	npx concurrently 'make dev' 'npx start-hexlet-devops-deploy-crud-frontend'
-
+#For hexlet tests
+run:
+	make start
