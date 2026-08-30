@@ -5,20 +5,26 @@ DOCKER_NETWORK=app-network
 
 create-network:
 	docker network create $(DOCKER_NETWORK) || true
+
+#For Dockerfile
 install:
 	pip install uv
 	uv sync --frozen
 start:
 	uv run python -c 'from app.repository import init_db; init_db()'
 	uv run gunicorn -w 4 -b 0.0.0.0:8080 --timeout 120 app.main:app
+start-with-nginx:
+	make start & nginx -g 'daemon off;'
+#For CI
 lint:
 	uv run ruff check .
 test:
 	uv run pytest
 build:
 	docker build -t my-flask-app:latest .
-run:
+run: #for hexlet tests
 	make start
+#Run app via Docker
 docker-run: create-network
 	docker run -d -p 8080:80 \
 		--name my-flask-app \
@@ -33,11 +39,11 @@ run-local-postgres: create-network
 		-e POSTGRES_DB=$(LOCAL_POSTGRES_DB) \
 		-p $(LOCAL_POSTGRES_PORT):5432 \
 		-d postgres
+#Run app without Docker
 dev:
 	set -a; . ./.env.local; set +a; \
 	uv run python -c 'from app.repository import init_db; init_db()'; \
 	uv run flask --app app.main run --port 8080
 dev-concarently:
 	npx concurrently 'make dev' 'npx start-hexlet-devops-deploy-crud-frontend'
-start-with-nginx:
-	make start & nginx -g 'daemon off;'
+
