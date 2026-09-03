@@ -15,7 +15,7 @@ test_data = {
         "id": 1,
         "original_url": "https://example.com/long-url1",
         "short_name": "test",
-        "short_url":  f"{os.getenv('BASE_URL')}/r/test"
+        "short_url":  f"{os.getenv('BASE_URL')}r/test"
     }
 
 
@@ -26,7 +26,7 @@ def make_test_data():
             "id": i,
             "original_url": f"https://example.com/long-url{i}",
             "short_name": f"test{i}",
-            "short_url":  f"{os.getenv('BASE_URL')}/r/test{i}"
+            "short_url":  f"{os.getenv('BASE_URL')}r/test{i}"
         } for i in range(records)]
         return result
     return factory
@@ -95,7 +95,7 @@ def test_links_show(monkeypatch, client):
         "id": 1,
         "original_url": "https://example.com/long-url1",
         "short_name": "7777",
-        "short_url": f"{os.getenv('BASE_URL')}/r/7777"
+        "short_url": f"{os.getenv('BASE_URL')}r/7777"
     }
     monkeypatch.setattr(Links, "find_link_by_id", lambda id: test_data)
     response = client.get('/api/links/1')
@@ -149,7 +149,7 @@ def test_links_patch_422_answer(monkeypatch, client):
         "id": 1,
         "original_url": "https://example.com/long-url1",
         "short_name": "exicted_name",
-        "short_url": f"{os.getenv('BASE_URL')}/r/old_name"
+        "short_url": f"{os.getenv('BASE_URL')}r/old_name"
     }
     monkeypatch.setattr(Links, "update_link", 
         lambda id, original_url, short_name, short_url: False)
