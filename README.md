@@ -21,18 +21,21 @@ To run unit tests use ```make test```
 To run linter check use ```make lint```
 
 It is nessesary to have .env.local for dev mode:  
-```SENTRY_DSN=???  
+```
+SENTRY_DSN=???  
 LOCAL_POSTGRES_USER=myuser  
 LOCAL_POSTGRES_PASSWORD=mypassword  
 LOCAL_POSTGRES_DB=mydb  
 LOCAL_POSTGRES_PORT=5432  
 POSTGRES_CONTAINER_NAME=my-db  
 DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/mydb?sslmode=disable  
-BASE_URL=http://127.0.0.1:8080/```  
+BASE_URL=http://127.0.0.1:8080/
+
+```  
 
 For production deploy to render:  
 - run postgres in render  
 - add env variables DATABASE_URL (internal url of run postgres in render), BASE_URL (render created url), SENTRY_DSN, PORT (value 80)  
 
 
-Render instance [https://devops-engineer-from-scratch-project-313-07ov.onrender.com/#/links](https://devops-engineer-from-scratch-project-313-07ov.onrender.com/#/links)
+Render instance https://devops-engineer-from-scratch-project-313-07ov.onrender.com/#/links
