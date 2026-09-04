@@ -3,7 +3,8 @@ import os
 import pytest
 from dotenv import load_dotenv  # Импортируем dotenv
 
-from app.main import Links, app
+from app.handlers import Links
+from app.main import app
 
 load_dotenv()  # Загрузка переменных окружения из файла .env
 
